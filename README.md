@@ -8,11 +8,11 @@ These are the tables we are using for the following questions:
 > The Basic section covers the fundamentals of SQL, including SELECT, WHERE, CASE, UNIONS, LIKE, and introduces us to simple aggregation. 
 <ol>
   <li> How can you retrieve all the information from the cd.facilities table? <br>
-  ```
+  ``` SQL
     {
     SELECT *
     FROM cd.facilities;
     }
   ```
-    </li>
-      </ol>
+  </li>
+</ol> 
