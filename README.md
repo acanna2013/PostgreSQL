@@ -14,5 +14,5 @@ These are the tables we are using for the following questions:
     FROM cd.facilities;
     }
   ```
-    <\li>
+    </li>
       </ol>
