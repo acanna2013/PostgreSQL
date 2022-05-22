@@ -9,8 +9,10 @@ These are the tables we are using for the following questions:
 <ol>
   <li> How can you retrieve all the information from the cd.facilities table? <br>
   ```
+    {
     SELECT *
     FROM cd.facilities;
+    }
   ```
     <\li>
       </ol>
