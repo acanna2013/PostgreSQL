@@ -71,3 +71,4 @@ WHERE cd.members.joindate = (
   SELECT MAX(cd.members.joindate)
   FROM cd.members
   );
+  
