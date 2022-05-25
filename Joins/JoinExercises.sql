@@ -51,3 +51,31 @@ INNER JOIN cd.bookings ON cd.members.memid = cd.bookings.memid
 INNER JOIN cd.facilities ON cd.facilities.facid = cd.bookings.facid
 WHERE cd.bookings.starttime >= '2012-09-14' AND cd.bookings.starttime < '2012-09-15' AND ((cd.members.memid = 0 AND guestcost*cd.bookings.slots > 30) OR (cd.members.memid != 0 AND membercost*cd.bookings.slots > 30))
 ORDER BY cost DESC;
+
+-- How can you output a list of all members, including the individual who recommended them (if any), without using any joins? 
+-- Ensure that there are no duplicates in the list, and that each firstname + surname pairing is 
+-- formatted as a column and ordered.
+SELECT DISTINCT cd.members.firstname || ' ' || cd.members.surname AS member, 
+(
+  SELECT recs.firstname || ' ' || recs.surname AS recommender
+	FROM cd.members recs
+	WHERE recs.memid = cd.members.recommendedby
+)
+FROM cd.members
+ORDER BY member;
+
+-- Same question as two questions above, but use subqueries instead of calculating the booking cost in two different places.
+SELECT member, facility, cost 
+FROM 
+(
+  SELECT cd.members.firstname || ' ' || cd.members.surname AS member, cd.facilities.name AS facility, 
+  CASE WHEN cd.members.memid = 0 THEN cd.bookings.slots * cd.facilities.guestcost
+  ELSE cd.bookings.slots * cd.facilities.membercost
+  END AS cost
+  FROM cd.members
+  INNER JOIN cd.bookings ON cd.bookings.memid = cd.members.memid
+  INNER JOIN cd.facilities ON cd.facilities.facid = cd.bookings.facid
+  WHERE cd.bookings.starttime >= '2012-09-14' AND cd.bookings.starttime < '2012-09-15'
+) as bookings
+WHERE cost > 30
+ORDER BY cost DESC;
