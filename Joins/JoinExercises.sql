@@ -11,3 +11,6 @@ FROM cd.bookings
 INNER JOIN cd.facilities ON cd.facilities.facid = cd.bookings.facid
 WHERE cd.facilities.name LIKE '%Tennis Court%' AND cd.bookings.starttime >= ('2012-09-21') AND cd.bookings.starttime < ('2012-09-22')
 ORDER BY cd.bookings.starttime;
+
+-- How can you output a list of all members who have recommended another member? 
+-- Ensure that there are no duplicates in the list, and that results are ordered by (surname, firstname).
