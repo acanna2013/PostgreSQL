@@ -14,3 +14,7 @@ ORDER BY cd.bookings.starttime;
 
 -- How can you output a list of all members who have recommended another member? 
 -- Ensure that there are no duplicates in the list, and that results are ordered by (surname, firstname).
+SELECT DISTINCT two.firstname, two.surname
+FROM cd.members AS one
+INNER JOIN cd.members AS two ON one.recommendedby = two.memid
+ORDER BY surname, firstname;
