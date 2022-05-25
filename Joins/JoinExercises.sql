@@ -18,3 +18,20 @@ SELECT DISTINCT two.firstname, two.surname
 FROM cd.members AS one
 INNER JOIN cd.members AS two ON one.recommendedby = two.memid
 ORDER BY surname, firstname;
+
+-- How can you output a list of all members, including the individual who recommended them (if any)? 
+-- Ensure that results are ordered by (surname, firstname).
+SELECT one.firstname, one.surname, two.firstname, two.surname
+FROM cd.members AS one
+LEFT OUTER JOIN cd.members AS two ON one.recommendedby = two.memid 
+ORDER BY one.surname, one.firstname;
+
+-- How can you produce a list of all members who have used a tennis court? 
+-- Include in your output the name of the court, and the name of the member formatted as a single column. 
+-- Ensure no duplicate data, and order by the member name followed by the facility name.
+SELECT DISTINCT cd.members.firstname || ' ' || cd.members.surname as member , cd.facilities.name as facility
+FROM cd.members
+INNER JOIN cd.bookings ON cd.members.memid = cd.bookings.memid
+INNER JOIN cd.facilities ON cd.facilities.facid = cd.bookings.facid
+WHERE cd.facilities.name LIKE '%Tennis Court%'
+ORDER BY member, facility;
