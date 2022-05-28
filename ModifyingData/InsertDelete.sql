@@ -26,3 +26,36 @@ WHERE name = 'Tennis Court 2';
 UPDATE cd.facilities
 SET membercost = 6, guestcost = 30
 WHERE facid = 0 OR facid = 1;
+
+-- We want to alter the price of the second tennis court so that it costs 10% more than the first one. 
+-- Try to do this without using constant values for the prices, so that we can reuse the statement if we want to.
+UPDATE cd.facilities
+SET membercost = 0.1 * 
+(
+ SELECT membercost
+ FROM cd.facilities
+ WHERE facid = 0
+) + membercost,
+guestcost = 0.1 *
+(
+  SELECT guestcost
+  FROM cd.facilities
+  WHERE facid = 0
+  ) + guestcost
+WHERE facid = 1;
+
+-- As part of a clearout of our database, we want to delete all bookings from the cd.bookings table. How can we accomplish this?
+DELETE FROM cd.bookings;
+
+-- We want to remove member 37, who has never made a booking, from our database. How can we achieve that?
+DELETE FROM cd.members
+WHERE memid=37;
+
+-- In our previous exercises, we deleted a specific member who had never made a booking. 
+-- How can we make that more general, to delete all members who have never made a booking?
+DELETE FROM cd.members
+WHERE memid NOT IN (
+  SELECT memid
+  FROM cd.bookings
+  );
+  
