@@ -22,3 +22,30 @@ FROM cd.facilities fc
 INNER JOIN cd.bookings bks ON bks.facid = fc.facid
 GROUP BY fc.facid
 ORDER BY fc.facid;
+
+-- Produce a list of the total number of slots booked per facility in the month of September 2012. 
+-- Produce an output table consisting of facility id and slots, sorted by the number of slots.
+SELECT facid, SUM(slots) as count
+FROM cd.bookings
+WHERE starttime >= '2012-09-01' AND starttime < '2012-10-01'
+GROUP BY facid
+ORDER BY count;
+
+-- Produce a list of the total number of slots booked per facility per month in the year of 2012. 
+-- Produce an output table consisting of facility id and slots, sorted by the id and month.
+SELECT facid, EXTRACT(MONTH FROM starttime) as month, SUM(slots) 
+FROM cd.bookings
+WHERE EXTRACT(YEAR FROM starttime) = 2012
+GROUP BY facid, month
+ORDER BY facid, month;
+
+-- Find the total number of members (including guests) who have made at least one booking.
+SELECT COUNT(DISTINCT memid)
+FROM cd.bookings;
+
+-- Produce a list of facilities with more than 1000 slots booked. Produce an output table consisting of facility id and slots, sorted by facility id.
+SELECT facid, SUM(slots) 
+FROM cd.bookings
+GROUP BY facid
+HAVING sum(slots) > 1000
+ORDER BY facid;
