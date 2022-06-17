@@ -161,3 +161,22 @@ GROUP BY f.facid
   ) sub
    WHERE rank BETWEEN 1 and 3
 ORDER BY name, rank;
+
+-- Classify facilities into equally sized groups of high, average, and low based on their revenue. Order by classification and facility name.
+SELECT name, 
+CASE WHEN num = 1 THEN 'high'
+WHEN num = 2 THEN 'average'
+ELSE 'low'
+END AS revenue FROM
+(
+  SELECT name, NTILE(3) OVER 
+  (ORDER BY SUM(slots * 
+			(CASE
+			WHEN memid = 0 THEN guestcost
+			ELSE membercost
+			END)) DESC) as num
+  FROM cd.facilities f
+  INNER JOIN cd.bookings b ON b.facid = f.facid
+  GROUP BY f.name
+  ) as subq
+ORDER BY revenue, name;
