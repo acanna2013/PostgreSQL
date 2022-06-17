@@ -84,3 +84,29 @@ FROM cd.bookings
 GROUP BY facid
 ORDER BY SUM(slots) DESC
 LIMIT 1;
+
+-- Produce a list of the total number of slots booked per facility per month in the year of 2012. 
+-- In this version, include output rows containing totals for all months per facility, and a total for all months for all facilities. 
+-- The output table should consist of facility id, month and slots, sorted by the id and month. 
+-- When calculating the aggregated values for all months and all facids, return null values in the month and facid columns.
+SELECT facid, EXTRACT(MONTH FROM starttime) AS month, SUM(slots)
+FROM cd.bookings
+WHERE starttime >= '2012-01-01' AND starttime < '2013-01-01'
+GROUP BY ROLLUP(facid, month)
+ORDER BY facid, month;
+
+-- Produce a list of the total number of hours booked per facility, remembering that a slot lasts half an hour. 
+-- The output table should consist of the facility id, name, and hours booked, sorted by facility id. Try formatting the hours to two decimal places.
+SELECT fc.facid, fc.name, trim(TO_CHAR(SUM(slots) * 0.5, '9999.99'))
+FROM cd.bookings bks
+INNER JOIN cd.facilities fc ON fc.facid = bks.facid
+GROUP BY fc.facid, fc.name
+ORDER BY fc.facid;
+
+-- Produce a list of each member name, id, and their first booking after September 1st 2012. Order by member ID.
+SELECT surname, firstname, m.memid, MIN(starttime)
+FROM cd.members m
+INNER JOIN cd.bookings b ON m.memid = b.memid
+WHERE starttime > '2012-09-01'
+GROUP BY m.memid, surname, firstname
+ORDER BY m.memid;
