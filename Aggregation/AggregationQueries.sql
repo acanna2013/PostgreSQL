@@ -49,3 +49,14 @@ FROM cd.bookings
 GROUP BY facid
 HAVING sum(slots) > 1000
 ORDER BY facid;
+
+-- Produce a list of facilities along with their total revenue. The output table should consist of facility name and revenue, sorted by revenue. 
+-- Remember that there's a different cost for guests and members!
+SELECT name, SUM(slots * CASE 
+WHEN memid != 0 THEN membercost
+ELSE guestcost
+END) AS revenue
+FROM cd.facilities fc
+INNER JOIN cd.bookings bks ON bks.facid = fc.facid
+GROUP BY fc.name
+ORDER BY revenue;
