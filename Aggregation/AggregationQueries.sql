@@ -143,3 +143,21 @@ INNER JOIN cd.members m ON bks.memid = m.memid
 GROUP BY m.memid
 ORDER BY rank, surname, firstname;
 
+
+-- Produce a list of the top three revenue generating facilities (including ties). Output facility name and rank, sorted by rank and facility name.
+SELECT name, 
+rank FROM (
+  SELECT name, 
+  RANK() OVER(ORDER BY 
+			SUM(slots * 
+			(CASE
+			WHEN memid = 0 THEN guestcost
+			ELSE membercost
+			END))
+			DESC) RANK
+  FROM cd.facilities f
+INNER JOIN cd.bookings b ON b.facid = f.facid
+GROUP BY f.facid
+  ) sub
+   WHERE rank BETWEEN 1 and 3
+ORDER BY name, rank;
