@@ -180,3 +180,14 @@ END AS revenue FROM
   GROUP BY f.name
   ) as subq
 ORDER BY revenue, name;
+
+-- Based on the 3 complete months of data so far, calculate the amount of time each facility will take to repay its cost of ownership. 
+-- Remember to take into account ongoing monthly maintenance. Output facility name and payback time in months, order by facility name.
+SELECT f.name as name, 	f.initialoutlay/((sum(case
+			when memid = 0 then slots * f.guestcost
+			else slots * membercost
+		end)/3) - f.monthlymaintenance) as months
+FROM cd.bookings b
+INNER JOIN cd.facilities f ON b.facid = f.facid
+GROUP BY f.facid
+ORDER BY f.name;
