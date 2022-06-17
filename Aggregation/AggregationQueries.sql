@@ -110,3 +110,29 @@ INNER JOIN cd.bookings b ON m.memid = b.memid
 WHERE starttime > '2012-09-01'
 GROUP BY m.memid, surname, firstname
 ORDER BY m.memid;
+
+-- Produce a list of member names, with each row containing the total member count. Order by join date, and include guest members.
+SELECT (
+  SELECT COUNT(*)
+  FROM cd.members), firstname, surname
+FROM cd.members
+GROUP BY firstname, surname, joindate
+ORDER BY joindate;
+
+-- Produce a monotonically increasing numbered list of members (including guests), ordered by their date of joining. 
+-- Remember that member IDs are not guaranteed to be sequential.
+SELECT firstname, surname
+FROM cd.members
+ORDER BY joindate;
+
+-- Output the facility id that has the highest number of slots booked. Ensure that in the event of a tie, all tieing results get output.
+SELECT facid, total from (
+  SELECT facid, sum(slots) total, RANK() OVER(ORDER BY sum(slots) DESC) rank
+  FROM cd.bookings
+  GROUP BY facid
+  ) as ranked
+  where rank = 1;
+  
+-- 
+
+
