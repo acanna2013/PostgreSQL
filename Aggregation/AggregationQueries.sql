@@ -60,3 +60,27 @@ FROM cd.facilities fc
 INNER JOIN cd.bookings bks ON bks.facid = fc.facid
 GROUP BY fc.name
 ORDER BY revenue;
+
+-- Produce a list of facilities with a total revenue less than 1000. 
+-- Produce an output table consisting of facility name and revenue, sorted by revenue. 
+-- Remember that there's a different cost for guests and members!
+SELECT name, 
+SUM(slots * CASE
+	WHEN memid = 0 THEN guestcost
+	ELSE membercost
+	END) AS revenue
+FROM cd.facilities fc
+INNER JOIN cd.bookings bks ON bks.facid = fc.facid
+GROUP BY name
+HAVING SUM(slots * CASE
+	WHEN memid = 0 THEN guestcost
+	ELSE membercost
+	END) < 1000
+ORDER BY revenue;
+
+-- Output the facility id that has the highest number of slots booked. 
+SELECT facid, SUM(slots) 
+FROM cd.bookings
+GROUP BY facid
+ORDER BY SUM(slots) DESC
+LIMIT 1;
